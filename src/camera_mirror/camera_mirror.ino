@@ -9,8 +9,8 @@ Servo mirrorL_Y;
 // set 0 positions for servos
 int mirrorR_XHome = 23;
 int mirrorR_YHome = 55;
-int mirrorL_XHome = 90;
-int mirrorL_YHome = 90;
+int mirrorL_XHome = 80;
+int mirrorL_YHome = 95;
 
 int mirrorR_XAngle = mirrorR_XHome; 
 int mirrorR_YAngle = mirrorR_YHome;

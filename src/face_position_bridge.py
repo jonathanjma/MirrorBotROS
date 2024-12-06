@@ -11,7 +11,7 @@ MIRROR_X_RIGHT = 6 / IN_TO_M
 MIRROR_Y = 12 / IN_TO_M
 MIRROR_Z = 6 / IN_TO_M
 
-arduino = serial.Serial(port='/dev/ttyACM0')
+arduino = serial.Serial(port='/dev/ttyACM1')
 
 def face_cloud_callback(msg):
     """
@@ -25,8 +25,6 @@ def face_cloud_callback(msg):
     #     print(f"Point: x={point.x}, y={point.y}, z={point.z}")
     
     rospy.loginfo(f"Faces: {len(msg.points)}")
-
-
 
     if len(msg.points) == 2:
 
