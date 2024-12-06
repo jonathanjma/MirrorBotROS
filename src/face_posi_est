@@ -1,0 +1,3 @@
+roslaunch realsense2_camera rs_camera.launch align_depth:=true enable_pointcloud:=true
+roslaunch face_detector face_detector.rs_rgbd.launch
+rosrun rviz rviz
