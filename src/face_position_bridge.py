@@ -36,17 +36,18 @@ def face_cloud_callback(msg):
     
     rospy.loginfo(f"Faces: {len(msg.points)}")
 
-    if len(msg.points) == 2:
+    if len(msg.points) >= 2:
+        sorted_points = sorted(msg.points, key=lambda p: p.z)
 
-        faceIdx = 0 if (msg.points[0].y < msg.points[1].y) else 1
-        face_mirror = np.array([msg.points[faceIdx].x, -msg.points[faceIdx].y, msg.points[faceIdx].z]) # camera has neg y axis going up
+        faceIdx = 0 if (sorted_points[0].x < sorted_points[1].x) else 1
+        face_mirror = np.array([sorted_points[faceIdx].x, -sorted_points[faceIdx].y, sorted_points[faceIdx].z]) # camera has neg y axis going up
         theta_horiz_single = int(np.degrees(np.arctan2(-MIRROR_X - face_mirror[0], face_mirror[2] - MIRROR_Z)))
         theta_vert_single = int(np.degrees(np.arctan2(face_mirror[1] - (MIRROR_Y_LEFT), face_mirror[2] - MIRROR_Z)))
         print(f"Single- Theta Horizontal: {theta_horiz_single}, Theta Vertical: {theta_vert_single}")
         
         # --------------------------------------------------------------------------------------------------------------
-        face1 = np.array([msg.points[0].x, -msg.points[0].y, msg.points[0].z]) # camera has neg y axis going up
-        face2 = np.array([msg.points[1].x, -msg.points[1].y, msg.points[1].z])
+        face1 = np.array([sorted_points[0].x, -sorted_points[0].y, sorted_points[0].z]) # camera has neg y axis going up
+        face2 = np.array([sorted_points[1].x, -sorted_points[1].y, sorted_points[1].z])
         midpoint = (face1 + face2) / 2
         print(midpoint)
 
