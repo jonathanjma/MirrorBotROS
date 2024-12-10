@@ -13,7 +13,7 @@ MIRROR_Y = 7 / IN_TO_M
 MIRROR_Y_LEFT = 10 / IN_TO_M
 MIRROR_Z = 4 / IN_TO_M
 
-arduino = serial.Serial(port='/dev/ttyACM1')
+arduino = serial.Serial(port='/dev/ttyACM0')
 
 last_time = 0
 throttle_time = 200
