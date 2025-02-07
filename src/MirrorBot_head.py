@@ -3,7 +3,7 @@ import time
 import serial
 
 class head:
-    def __init__(self, servo_serial_port='/dev/ttyACM0'):
+    def __init__(self, servo_serial_port='/dev/ttyACM1'):
         self.startup = False
         self.shutdown = None
         self.home_pos = 0

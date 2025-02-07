@@ -10,11 +10,13 @@ from pynput import keyboard
 
 
 IN_TO_M = 39.37
-MIRROR_X = 6 / IN_TO_M
+MIRROR_X = 8 / IN_TO_M
+# MIRROR_X_RIGHT = 4.5 / IN_TO_M
 MIRROR_X_RIGHT = 1.5 / IN_TO_M
 MIRROR_Y = 12 / IN_TO_M
 
 MIRROR_Y_LEFT = 14 / IN_TO_M
+#MIRROR_Y_LEFT = 10 / IN_TO_M
 
 MIRROR_Z = 4 / IN_TO_M
 
@@ -135,13 +137,13 @@ class Mirror_actions():
         print(self.theta_horiz_single_r, "," , self.theta_vert_single_r, ",", self.theta_horiz_single_l, ",", self.theta_vert_single_l)
 
     def connect_singlel_connectr(self):
-        # self.robot_head.mirror_move(self.theta_horiz_connect_r, self.theta_vert_connect_r-3, self.theta_horiz_single_l, self.theta_vert_single_l)
-        self.robot_head.mirror_move(self.theta_horiz_single_r, self.theta_vert_single_r, self.theta_horiz_single_l, self.theta_vert_single_l)
+        self.robot_head.mirror_move(self.theta_horiz_connect_r, self.theta_vert_connect_r, self.theta_horiz_single_l, self.theta_vert_single_l)
+#        self.robot_head.mirror_move(self.theta_horiz_single_r, self.theta_vert_single_r, self.theta_horiz_single_l, self.theta_vert_single_l)
 
         print(f"Connect- Theta Horizontal: {self.theta_horiz_connect_r}, Theta Vertical: {self.theta_vert_connect_r}")
 
     def connect_connectl_singler(self):
-        self.robot_head.mirror_move(self.theta_horiz_single_r, self.theta_vert_single_r, self.theta_horiz_connect_l, self.theta_vert_connect_l)
+        self.robot_head.mirror_move(self.theta_horiz_single_rl+5, self.theta_vert_single_rl, self.theta_horiz_connect_l-2, self.theta_vert_connect_l)
         # print(f"Connect- Theta Horizontal: {self.theta_horiz_connect_r}, Theta Vertical: {self.theta_vert_connect_r}")
 
     def mirror_down(self):
