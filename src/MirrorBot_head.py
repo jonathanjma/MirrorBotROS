@@ -1,49 +1,65 @@
+#!/usr/bin/env python3
 import time
 import serial
 
 class head:
-    def __init__(self, LA_serial_port='/dev/ttyACM0', servo_serial_port='/dev/ttyACM1'):
+    def __init__(self, servo_serial_port='/dev/ttyACM0'):
         self.startup = False
         self.shutdown = None
-        if LA_serial_port is not None:
-            self.LA_serial_wheel = serial.Serial(LA_serial_port, 9600, timeout=1)
-        if servo_serial_port is not None:
-            self.servo_serial_wheel = serial.Serial(servo_serial_port, 9600, timeout=1)
-        if (LA_serial_port is None) and (servo_serial_port is None):
-            print("[WARN] NO dev on HEAD")
+        self.home_pos = 0
+        self.servo_serial_wheel = serial.Serial(servo_serial_port, 9600, timeout=1)
         
-    def start(self):
-        self.LA_serial_wheel.write(b'START|\n')
-        self.servo_serial_wheel.write(b'START|\n')
-
-    def stop(self):
-        self.LA_serial_wheel.write(b'STOP|\n')
-        self.servo_serial_wheel.write(b'STOP|\n')
-        time.sleep(0.25)
-
-    def LA_up(self, duration: int = 1000):
-        command = f'U|{duration}\n'
-        self.LA_serial_wheel.write(command.encode())
-        time.sleep(duration / 1000)
-
-    def LA_down(self, duration: int = 1000):
-        command = f'D|{duration}\n'
-        self.LA_serial_wheel.write(command.encode())
-        time.sleep(duration / 1000)
+    def homes(self):
+        print("Mirror Home")
+        t_start = time.time()
+        while((time.time()-t_start) < 1):
+            self.servo_serial_wheel.write((f"MR_X {0}\nMR_Y {0}\nML_X {0}\nML_Y {0}\n").encode())
+            time.sleep(0.25)
     
-    def yaw(self, rad_1: int, rad_2: int, timeout=0.1):
-        command = f'yaw|{rad_1}|{rad_2}\n'
-        self.servo_serial_wheel.write(command.encode())
-        time.sleep(timeout)
-    
-    def tilt(self, rad_1: int, rad_2: int, timeout=0.1):
-        command = f'tilt|{rad_1}|{rad_2}\n'
-        self.servo_serial_wheel.write(command.encode())
-        time.sleep(timeout)
+    def mirror_move(self,alpha_r:int,gamma_r:int,alpha_l:int,gamma_l:int):
+        t_start = time.time()
+        while((time.time()-t_start) < 1):
+            self.servo_serial_wheel.write((f"MR_X {alpha_r}\nMR_Y {gamma_r}\nML_X {alpha_l}\nML_Y {gamma_l}\n").encode())
+            time.sleep(0.25)
 
+    def mirror_nod(self, r:bool, l:bool, duration:int):
+        t_start = time.time()
+        nod_by = 30
+        while ((time.time()-t_start) < duration):
+            self.mirror_move(0, (self.home_pos + nod_by) * int(r), 0, (self.home_pos + nod_by) * int(r))
+            time.sleep(0.8)
+            self.mirror_move(0, (self.home_pos - nod_by) * int(r), 0, (self.home_pos - nod_by) * int(r))
+            time.sleep(0.8)
+        self.homes()
 
 if __name__ == "__main__":
-    head_test = head(None,'/dev/ttyACM0')
-    head_start_time = time.time()
-    head_test.yaw(100,0)
+    head_test = head('/dev/ttyACM1')
+    print("new_pos")
+    # head_test.mirror_move(20,45,-20,-45)    
+    # time.sleep(6)
+    # head_test.homes()
+    # time.sleep(3)
+    head_test.mirror_nod(1,1,5)
+
+
+
+
+# two mirror both face to me
+
+# then
+
+# both face to other
+
+# then
+
+# switch mirror for reflection
+
+# then
+
+# face to me and myself
+
+# then
+
+# both left mirror down
+
     
