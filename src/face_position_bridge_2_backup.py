@@ -6,9 +6,9 @@ from std_msgs.msg import String
 import numpy as np
 import serial
 import time
+import datetime
 from MirrorBot_head import head
 from pynput import keyboard
-import datetime
 import atexit
 
 
@@ -24,9 +24,6 @@ MIRROR_Y_LEFT = 14 / IN_TO_M
 
 MIRROR_Z = 4 / IN_TO_M
 
-start_datetime = datetime.datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
-datetime_action_logs = []
-
 class Mirror_actions():
     def __init__(self):
         print("hwaaaat")
@@ -36,7 +33,6 @@ class Mirror_actions():
         print("rock")
         rospy.Subscriber('/face_detector/faces_cloud', PointCloud, self.face_cloud_callback)
         rospy.Subscriber('/gpt_action', String, self.gpt_action_callback)
-        #rospy.Subscriber('/mirror_cmd', String, self.mirror_cmd_callback)
         print("in")
         # mirror tracking filter
         self.last_time = 0
@@ -48,6 +44,10 @@ class Mirror_actions():
         self.listener = keyboard.Listener(on_press=self.on_press)  # Start the keyboard listener
         self.listener.start()
 
+        # action logger
+        self.start_datetime = datetime.datetime.now().time()
+        self.datetime_action_logs = []
+
     def gpt_action_callback(self, action):
         try:
             action = int(action.data)
@@ -56,34 +56,30 @@ class Mirror_actions():
         except:
             pass
 
-
     def on_press(self, key):
-        
-        # Check key.char for printable characters
-        current_time = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S")
-        if key.char == '1':
-            self.action = '1'
-        elif key.char == '2':
-            self.action = '2'
-        elif key.char == '3':
-            self.action = '3'
-        elif key.char == '4':
-            self.action = '4'
-        elif key.char == '5':
-            self.action = '5'
-        elif key.char == '6':
-            self.action = "6"
-        elif key.char == '7':
-            self.action = "7"
-        elif key.char == "8":
-            self.action = '8'
-        elif key.char == "0":
-            self.action = '0'
-        
-        if self.action is not None:
-            print("\nAction ", self.action, " occurs at time ", current_time)
-            datetime_action_logs.append(current_time + ": Action " + str(self.action))
-
+        try:
+            # Check key.char for printable characters
+            if key.char == '1':
+                self.action = '1'
+            elif key.char == '2':
+                self.action = '2'
+            elif key.char == '3':
+                self.action = '3'
+            elif key.char == '4':
+                self.action = '4'
+            elif key.char == '5':
+                self.action = '5'
+            elif key.char == '6':
+                self.action = "6"
+            elif key.char == '7':
+                self.action = "7"
+            elif key.char == "8":
+                self.action = '8'
+            elif key.char == "0":
+                self.action = '0'
+        except AttributeError:
+            # This handles special keys (non-printable keys) if needed
+            pass
 
     def face_cloud_callback(self, msg):
         """
@@ -198,6 +194,9 @@ class Mirror_actions():
         while not rospy.is_shutdown():             
             if self.num_people >=2 :    
                 try:
+                    current_time = datetime.datetime.now().time()
+                    print("\nAction ", self.action, " occurs at time ", current_time)
+                    self.datetime_action_logs.append(current_time, ": Action ", self.action, " executed\n")
                     if self.action == '1':
                         self.look_to_lp() 
                     elif self.action == "2": 
@@ -221,14 +220,14 @@ class Mirror_actions():
                 except:
                     print("waiting for points")
 
-@atexit.register
-# Saves all logging information to a txt file
-def on_close():
-    filename = "datetime_action_log_" + str(start_datetime) + ".txt"
-    with open(filename, 'w') as f:
-        for line in datetime_action_logs:
-            f.write(f"{line}\n")
-    print('Logs saved to ', filename) #save my data
+    @atexit.register
+    # Saves all logging information to a txt file
+    def on_close(self):
+        filename = "datetime_action_log_" + self.start_datetime + ".txt"
+        with open(filename, 'w') as f:
+            for line in self.datetime_action_logs:
+                f.write(f"{line}\n")
+        print('Logs saved to ', filename) #save my data
 
 if __name__ == '__main__':
     print("what")

@@ -12,7 +12,6 @@ import math
 import MirrorBot
 from simple_pid import PID
 
-
 class camera_hoyer_teleop():
     def __init__(self) -> None:
         self.robot = MirrorBot.MirrorBot()
@@ -88,7 +87,6 @@ class camera_hoyer_teleop():
         """
         start to move the hoyer to the clicked point. hoyer's state is updated through '/tf'
         """
-        self.robot.base.start()
         self.vel_cap = 70
         self.trans_err = 0.5 # meters
         self.yaw_err = 5 

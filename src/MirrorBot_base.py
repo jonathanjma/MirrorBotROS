@@ -16,32 +16,16 @@ class base:
             print(f"Sent command: {command.strip()}")
         else:
             raise ValueError("PWM values must be between -255 and 255")
-
-    def move_forward(self, speed=200):
-        """Moves the robot forward."""
-        self.send_command(speed, speed)
-
-    def move_backward(self, speed=200):
-        """Moves the robot backward."""
-        self.send_command(-speed, -speed)
-
-    def turn_left(self, speed=200):
-        """Turns the robot left by setting left motor speed to negative and right motor speed to positive."""
-        self.send_command(-speed, speed)
-
-    def turn_right(self, speed=200):
-        """Turns the robot right by setting right motor speed to negative and left motor speed to positive."""
-        self.send_command(speed, -speed)
-
     def stop(self):
-        """Stops the robot by setting both motor speeds to 0."""
-        self.send_command(0, 0)
+        """
+        stop the base
+        """
+        self.serial_connection.write(b'X\n')
+        time.sleep(0.2)
 
-    def close(self):
-        """Closes the serial connection."""
-        self.serial_connection.close()
-    def start(self):
-        pass
+    def move_with(self, left_PWM, right_PWM):
+        command = f'PWM|{left_PWM}|{right_PWM}\n'
+        self.serial_connection.write(command.encode())
 
 # Example usage
 if __name__ == "__main__":

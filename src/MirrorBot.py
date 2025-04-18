@@ -6,7 +6,4 @@ class MirrorBot():
         self.base = MirrorBot_base.base(serial_port=base_serial_port)
         self.head = MirrorBot_head.head(servo_serial_port=servo_serial_port)
     
-    def start(self):
-        self.base.start()
-        self.head.start()
         

@@ -20,6 +20,7 @@ class head:
         t_start = time.time()
         while((time.time()-t_start) < 1):
             self.servo_serial_wheel.write((f"MR_X {alpha_r}\nMR_Y {gamma_r}\nML_X {alpha_l}\nML_Y {gamma_l}\n").encode())
+            print("mirror being moved")
             time.sleep(0.25)
 
     def mirror_nod(self, r:bool, l:bool, duration:int):
